@@ -35,12 +35,18 @@ sys.setrecursionlimit(10998)
 def main():
     razm = int(input("Введите количество вершин:\t"))
 
+
+    G = generator_smezh(razm)
     visited = [0 for i in range(razm)]
+
+    print(G)
+
     current = int(input("C какой вершины начать?\t"))
+    
     lst = []
-    print(search(generator_smezh(razm), visited, current, lst))
+    print(search(G, visited, current, lst))
 
-
+    
 
 if __name__ == "__main__":
     main()
