@@ -37,12 +37,12 @@ def main():
 
 
     G = generator_smezh(razm)
-    visited = [0 for i in range(razm)]
+    visited = [0]*razm
 
     print(G)
 
     current = int(input("C какой вершины начать?\t"))
-    
+
     lst = []
     print(search(G, visited, current, lst))
 
