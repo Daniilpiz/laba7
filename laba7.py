@@ -1,7 +1,7 @@
 import random as rd
 import numpy as np
 
-from collections import deque
+import sys
 
 
 def generator_smezh(razm):
@@ -27,7 +27,7 @@ def search(G: list, visited: list, start: int):
             
             
 
-    
+sys.setrecursionlimit(10998)
 def main():
     razm = int(input("Введите количество вершин:\t"))
 
