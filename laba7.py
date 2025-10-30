@@ -34,12 +34,8 @@ def main():
     visited = [0 for i in range(razm)]
     current = int(input("C какой вершины начать?\t"))
 
-
-
     print(search(generator_smezh(razm), visited, current))
-    
 
-    pass
 
 
 if __name__ == "__main__":
