@@ -17,13 +17,17 @@ def generator_smezh(razm):
     return matr_sm
 
 
-def search(G: list, visited: list, start: int):
+def search(G: list, visited: list, start: int, vyvod):
     visited[start] = True
+
+    vyvod.append(start)
     print(f"Посетили узел: {start}")
 
     for i in range(len(G)):
         if G[start][i] == 1 and not visited[i]:
-            search(G, visited, i)
+            search(G, visited, i, vyvod)
+
+    return vyvod
             
             
 
@@ -33,8 +37,8 @@ def main():
 
     visited = [0 for i in range(razm)]
     current = int(input("C какой вершины начать?\t"))
-
-    print(search(generator_smezh(razm), visited, current))
+    lst = []
+    print(search(generator_smezh(razm), visited, current, lst))
 
 
 
