@@ -1,57 +1,44 @@
 import random as rd
 import numpy as np
-
 import sys
 
 
 def generator_smezh(razm):
-    matr_sm = np.array([abs(rd.randint(-1000, 1000))%2 for _ in range(razm) for _ in range(razm)]).reshape(razm, razm)
-
+    # Генерируем случайную матрицу смежности
+    matr_sm = np.array([abs(rd.randint(0, 1000)) % 2 for _ in range(razm * razm)]).reshape(razm, razm)
+    
+    # Делаем матрицу симметричной (для неориентированного графа)
     for i in range(razm):
-        matr_sm[i, i] = 0
-        for j in range(i):
-            if i<=j:
-                matr_sm[i, j] = matr_sm[j, i] if True else 0
-
+        matr_sm[i, i] = 0  # Нет петель
+        for j in range(i + 1, razm):
+            matr_sm[j, i] = matr_sm[i, j]  # Симметрируем
+    
+    print("Матрица смежности:")
     print(matr_sm)
     return matr_sm.tolist()
 
 
-def search(G: list, visited: list, start: int, vyvod):
+def dfs(G: list, visited: list, start: int, vyvod):
     visited[start] = True
-
     vyvod.append(start)
     print(f"Посетили узел: {start}")
 
     for i in range(len(G)):
         if G[start][i] == 1 and not visited[i]:
-            search(G, visited, i, vyvod)
+            dfs(G, visited, i, vyvod)
 
     return vyvod
 
+
 def matrix_to_adj_list(matrix):
-    """Функциональный стиль преобразования"""
+    """Функциональный стиль преобразования матрицы в список смежности"""
     return [
         [j for j in range(len(matrix)) if matrix[i][j] != 0]
         for i in range(len(matrix))
     ]
 
-def matrix_to_adj_dict(matrix):
-    n = len(matrix)
-    graph = {}
-    
-    for i in range(n):
-        graph[i] = {}  # инициализируем словарь для вершины i
-        for j in range(n):
-            weight = matrix[i][j]
-            if weight != 0:  # ребро существует
-                graph[i][j] = weight
-    
-    return graph
 
-
-
-def search_2(adj_list: list, visited: list, start: int, vyvod):
+def dfs_2(adj_list: list, visited: list, start: int, vyvod):
     visited[start] = True
     vyvod.append(start)
     print(f"Посетили узел: {start}")
@@ -59,40 +46,67 @@ def search_2(adj_list: list, visited: list, start: int, vyvod):
     # Проходим по всем соседям текущей вершины
     for neighbor in adj_list[start]:
         if not visited[neighbor]:
-            search_2(adj_list, visited, neighbor, vyvod)
+            dfs_2(adj_list, visited, neighbor, vyvod)
 
     return vyvod
-            
-            
 
-sys.setrecursionlimit(10998)
+
+def dfs_non_recursion(G: list, visited: list, start: int, vyvod):
+    stack = [start]
+    
+    while stack:
+        current = stack.pop()
+        
+        if not visited[current]:
+            visited[current] = True
+            vyvod.append(current)
+            print(f"Посетили узел: {current}")
+            
+            # Добавляем соседей в обратном порядке для сохранения порядка обхода
+            for i in range(len(G[current]) - 1, -1, -1):
+                if G[current][i] == 1 and not visited[i]:
+                    stack.append(i)
+    
+    return vyvod
+
+
 def main():
     razm = int(input("Введите количество вершин:\t"))
+    
+    # Увеличиваем лимит рекурсии (осторожно!)
+    sys.setrecursionlimit(max(10998, razm * 2))
 
-
-    G = generator_smezh(razm)
-    visited_1 = [0]*razm
-
+    # Генерируем матрицу смежности
+    matrix = generator_smezh(razm)
+    visited_1 = [False] * razm
 
     current = int(input("C какой вершины начать?\t"))
 
+    # Обход в глубину по матрице смежности
+    print("\n--- DFS по матрице смежности ---")
     lst_1 = []
-    print(search(G, visited_1, current, lst_1))
+    print("Результат:", dfs(matrix, visited_1.copy(), current, lst_1))
 
+    # Преобразуем в список смежности
+    adj_list = matrix_to_adj_list(matrix)
+    print("\n--- Список смежности ---")
+    for vertex, neighbors in enumerate(adj_list):
+        print(f"Вершина {vertex}: {neighbors}")
 
-    G = matrix_to_adj_dict(G)
-    for vertex, neighbors in G.items():
-        print(vertex, neighbors)
-
-
+    # Обход в глубину по списку смежности
+    print("\n--- DFS по списку смежности ---")
     current = int(input("C какой вершины начать?\t"))
-    lst_2 = []
-    visited_2 = [0]*razm
+    lst_1 = []
+    visited_1 = [False] * razm
+    print("Результат:", dfs_2(adj_list, visited_1, current, lst_1))
 
-    
-    print(search_2(G, visited_2, current, lst_2))
+    # Нерекурсивный обход в глубину
+    print("\n--- Нерекурсивный DFS ---")
+    current = int(input("C какой вершины начать?\t"))
+    lst_1 = []
+    visited_1 = [False] * razm
+    print("Результат:", dfs_non_recursion(matrix, visited_1, current, lst_1))
 
-    
 
 if __name__ == "__main__":
     main()
