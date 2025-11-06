@@ -69,7 +69,7 @@ def dfs_non_recursion(G: list, visited: list, start: int, vyvod):
     
     return vyvod
 
-
+ 
 def main():
     razm = int(input("Введите количество вершин:\t"))
     
