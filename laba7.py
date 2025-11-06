@@ -2,6 +2,8 @@ import random as rd
 import numpy as np
 import sys
 
+import stack as st
+
 
 def generator_smezh(razm):
     # Генерируем случайную матрицу смежности
@@ -50,25 +52,23 @@ def dfs_2(adj_list: list, visited: list, start: int, vyvod):
 
     return vyvod
 
-
 def dfs_non_recursion(G: list, visited: list, start: int, vyvod):
-    stack = [start]
+    stack = st.Stack()
+    stack.push(start)
+    visited[start] = True  # Помечаем стартовую вершину как посещенную сразу
     
-    while stack:
+    while not stack.is_empty():
         current = stack.pop()
+        vyvod.append(current)
+        print(f"Посетили узел: {current}")
         
-        if not visited[current]:
-            visited[current] = True
-            vyvod.append(current)
-            print(f"Посетили узел: {current}")
-            
-            # Добавляем соседей в обратном порядке для сохранения порядка обхода
-            for i in range(len(G[current]) - 1, -1, -1):
-                if G[current][i] == 1 and not visited[i]:
-                    stack.append(i)
+        # Добавляем всех непосещенных соседей
+        for i in range(len(G[current]) - 1, -1, -1):
+            if G[current][i] == 1 and not visited[i]:
+                visited[i] = True
+                stack.push(i)
     
     return vyvod
-
  
 def main():
     razm = int(input("Введите количество вершин:\t"))
@@ -103,9 +103,9 @@ def main():
     # Нерекурсивный обход в глубину
     print("\n--- Нерекурсивный DFS ---")
     current = int(input("C какой вершины начать?\t"))
-    lst_1 = []
+    lst_2 = []
     visited_1 = [False] * razm
-    print("Результат:", dfs_non_recursion(matrix, visited_1, current, lst_1))
+    print("Результат:", dfs_non_recursion(matrix, visited_1.copy(), current, lst_2))
 
 
 if __name__ == "__main__":

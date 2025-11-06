@@ -11,7 +11,7 @@ class Stack:
     
     def leng(self):
         cnt = 0
-        current = self.head
+        current = self.top
 
         while current is not None:
             cnt+=1
